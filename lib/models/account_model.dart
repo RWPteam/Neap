@@ -1,6 +1,8 @@
-import 'package:auth_totp/auth_totp.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'dart:typed_data';
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 
 class TotpAccount {
   final String id;
@@ -11,6 +13,7 @@ class TotpAccount {
   final int digits;
   final String avatarType;
   final String? avatarImagePath;
+  final String algorithm;
 
   TotpAccount({
     required this.id,
@@ -21,10 +24,123 @@ class TotpAccount {
     this.digits = 6,
     this.avatarType = 'auto',
     this.avatarImagePath,
+    this.algorithm = 'SHA1',
   });
 
   String generateCode() {
-    return AuthTOTP.generateTOTPCode(secretKey: secret, interval: interval);
+    final secretBytes = _decodeSecret(secret);
+    final time = DateTime.now().millisecondsSinceEpoch ~/ 1000 ~/ interval;
+
+    final timeBytes = Uint8List(8)
+      ..buffer.asByteData().setInt64(0, time, Endian.big);
+
+    final Hash hashAlgorithm = _getHashAlgorithm(algorithm);
+    final hmac = Hmac(hashAlgorithm, secretBytes);
+    final hash = hmac.convert(timeBytes).bytes;
+
+    final offset = hash[hash.length - 1] & 0xf;
+    final binary =
+        ((hash[offset] & 0x7f) << 24) |
+        ((hash[offset + 1] & 0xff) << 16) |
+        ((hash[offset + 2] & 0xff) << 8) |
+        (hash[offset + 3] & 0xff);
+
+    final divisor = _pow(10, digits);
+    final code = binary % divisor;
+
+    return code.toString().padLeft(digits, '0');
+  }
+
+  static Hash _getHashAlgorithm(String algorithm) {
+    final upperAlgo = algorithm.toUpperCase();
+    if (upperAlgo == 'SHA256') {
+      return sha256;
+    } else if (upperAlgo == 'SHA512') {
+      return sha512;
+    } else {
+      return sha1;
+    }
+  }
+
+  static List<int> _decodeSecret(String secret) {
+    final processed = secret.replaceAll(RegExp(r'[ -]'), '').toUpperCase();
+
+    if (_isBase32(processed)) {
+      try {
+        return _base32Decode(processed);
+      } catch (e) {
+        debugPrint('Base32 decode failed: $e');
+      }
+    }
+
+    try {
+      return base64.decode(processed);
+    } catch (e) {
+      debugPrint('Base64 decode failed: $e');
+    }
+
+    if (_isHex(processed)) {
+      try {
+        return _hexDecode(processed);
+      } catch (e) {
+        debugPrint('Hex decode failed: $e');
+      }
+    }
+
+    try {
+      return utf8.encode(secret);
+    } catch (e) {
+      return utf8.encode(secret);
+    }
+  }
+
+  static bool _isBase32(String str) {
+    final base32Chars = RegExp(r'^[A-Z2-7=]+$');
+    return base32Chars.hasMatch(str);
+  }
+
+  static bool _isHex(String str) {
+    final hexChars = RegExp(r'^[0-9A-F]+$', caseSensitive: false);
+    return str.length.isEven && hexChars.hasMatch(str);
+  }
+
+  static List<int> _hexDecode(String hex) {
+    final result = <int>[];
+    for (int i = 0; i < hex.length; i += 2) {
+      result.add(int.parse(hex.substring(i, i + 2), radix: 16));
+    }
+    return result;
+  }
+
+  static List<int> _base32Decode(String base32) {
+    const base32Chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+    final buffer = <int>[];
+    var bits = 0;
+    var value = 0;
+
+    for (var char in base32.toUpperCase().codeUnits) {
+      if (char == '='.codeUnitAt(0)) break;
+      final index = base32Chars.indexOf(String.fromCharCode(char));
+      if (index == -1) {
+        throw ArgumentError('Invalid Base32 character: $char');
+      }
+      value = (value << 5) | index;
+      bits += 5;
+
+      if (bits >= 8) {
+        buffer.add((value >> (bits - 8)) & 0xff);
+        bits -= 8;
+      }
+    }
+    return buffer;
+  }
+
+  static int _pow(int base, int exponent) {
+    int result = 1;
+    for (int i = 0; i < exponent; i++) {
+      result *= base;
+    }
+    return result;
   }
 
   Map<String, dynamic> toJson() => {
@@ -36,6 +152,7 @@ class TotpAccount {
     'digits': digits,
     'avatarType': avatarType,
     'avatarImagePath': avatarImagePath,
+    'algorithm': algorithm,
   };
 
   factory TotpAccount.fromJson(Map<String, dynamic> json) {
@@ -48,6 +165,7 @@ class TotpAccount {
       digits: json['digits'] ?? 6,
       avatarType: json['avatarType'] ?? 'auto',
       avatarImagePath: json['avatarImagePath'],
+      algorithm: json['algorithm'] ?? 'SHA1',
     );
   }
 
