@@ -8,7 +8,6 @@ flutter build apk --split-debug-info --obfuscate  --split-per-abi
 ```
 # Todo
 * i18n
-* Fingerprint
 * sort
 * Custom NTP
 * more feature...

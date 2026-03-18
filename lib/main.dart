@@ -21,6 +21,7 @@ class MyApp extends StatefulWidget {
   @override
   State<MyApp> createState() => _MyAppState();
 
+  // ignore: library_private_types_in_public_api
   static _MyAppState? of(BuildContext context) =>
       context.findAncestorStateOfType<_MyAppState>();
 }
@@ -36,6 +37,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   DateTime? _backgroundTimestamp;
   final Duration _gracePeriod = const Duration(seconds: 5);
+
+  void _lockAppAndShowLockScreen() {
+    if (!mounted) return;
+
+    // 跳回根路由，避免 detail 页面仍然显示
+    Navigator.of(context).popUntil((route) => route.isFirst);
+
+    setState(() {
+      _isAuthenticated = false;
+    });
+  }
 
   @override
   void initState() {
@@ -66,9 +78,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       if (_backgroundTimestamp != null) {
         final durationAway = DateTime.now().difference(_backgroundTimestamp!);
         if (durationAway > _gracePeriod) {
-          setState(() {
-            _isAuthenticated = false;
-          });
+          _lockAppAndShowLockScreen();
           _authenticate();
         } else {
           debugPrint('在宽限期内返回，跳过验证');
@@ -89,6 +99,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
 
     if (_isAuthenticated || _isAuthenticating) return;
+
+    // 认证前确保显示锁屏
+    _lockAppAndShowLockScreen();
 
     setState(() => _isAuthenticating = true);
 

@@ -15,7 +15,7 @@ class AppSettings {
     themeMode: 'system',
     pageTheme: 'default',
     useMaterialYou: false,
-    requireBiometrics: false,
+    requireBiometrics: true,
   );
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
@@ -23,7 +23,7 @@ class AppSettings {
       themeMode: json['themeMode'] ?? 'system',
       pageTheme: json['pageTheme'] ?? 'default',
       useMaterialYou: json['useMaterialYou'] ?? false,
-      requireBiometrics: json['requireBiometrics'] ?? false,
+      requireBiometrics: json['requireBiometrics'] ?? true,
     );
   }
 
