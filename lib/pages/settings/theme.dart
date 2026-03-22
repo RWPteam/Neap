@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:neap/pages/settings/egg.dart';
+import 'package:neap/pages/settings/other.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/setting_service.dart';
 
