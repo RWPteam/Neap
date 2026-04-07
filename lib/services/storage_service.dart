@@ -34,6 +34,10 @@ class StorageService {
     }
   }
 
+  Future<void> replaceAccounts(List<TotpAccount> accounts) async {
+    await _saveAccounts(accounts);
+  }
+
   Future<void> _saveAccounts(List<TotpAccount> accounts) async {
     final jsonList = accounts.map((a) => a.toJson()).toList();
     await _storage.write(key: _accountsKey, value: jsonEncode(jsonList));

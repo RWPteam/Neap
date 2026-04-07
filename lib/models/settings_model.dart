@@ -7,6 +7,7 @@ class AppSettings {
   final bool preventScreenshot;
   final bool useNetworkTime;
   final String ntpServer;
+  final bool showOnHome;
 
   const AppSettings({
     required this.themeMode,
@@ -17,6 +18,7 @@ class AppSettings {
     required this.preventScreenshot,
     required this.useNetworkTime,
     required this.ntpServer,
+    required this.showOnHome,
   });
 
   static const defaults = AppSettings(
@@ -28,6 +30,7 @@ class AppSettings {
     preventScreenshot: true,
     useNetworkTime: false,
     ntpServer: 'pool.ntp.org',
+    showOnHome: false,
   );
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
@@ -40,6 +43,7 @@ class AppSettings {
       preventScreenshot: json['preventScreenshot'] ?? true,
       useNetworkTime: json['useNetworkTime'] ?? false,
       ntpServer: json['ntpServer'] ?? 'pool.ntp.org',
+      showOnHome: json['showOnHome'] ?? false,
     );
   }
 
@@ -53,6 +57,7 @@ class AppSettings {
       'preventScreenshot': preventScreenshot,
       'useNetworkTime': useNetworkTime,
       'ntpServer': ntpServer,
+      'showOnHome': showOnHome,
     };
   }
 
@@ -65,6 +70,7 @@ class AppSettings {
     bool? preventScreenshot,
     bool? useNetworkTime,
     String? ntpServer,
+    bool? showOnHome,
   }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
@@ -75,6 +81,7 @@ class AppSettings {
       preventScreenshot: preventScreenshot ?? this.preventScreenshot,
       useNetworkTime: useNetworkTime ?? this.useNetworkTime,
       ntpServer: ntpServer ?? this.ntpServer,
+      showOnHome: showOnHome ?? this.showOnHome,
     );
   }
 }

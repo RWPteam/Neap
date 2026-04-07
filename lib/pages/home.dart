@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/account_model.dart';
+import '../models/settings_model.dart';
 import '../services/storage_service.dart';
+import '../services/setting_service.dart';
 import 'add.dart';
 import 'detail.dart';
 import 'settings/splash.dart';
@@ -16,8 +18,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final StorageService _storage = StorageService();
+  final SettingsService _settingsService = SettingsService();
   List<TotpAccount> _accounts = [];
   bool _isLoading = true;
+  AppSettings _settings = AppSettings.defaults;
   Timer? _timer;
 
   @override
@@ -41,8 +45,10 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadAccounts() async {
     final accounts = await _storage.getAccounts();
+    final settings = await _settingsService.getSettings();
     setState(() {
       _accounts = accounts;
+      _settings = settings;
       _isLoading = false;
     });
   }
@@ -149,6 +155,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildAccountTile(TotpAccount account) {
+    final code = account.generateCode();
+    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    final remaining = account.interval - (now % account.interval);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -172,7 +182,42 @@ class _HomePageState extends State<HomePage> {
           account.label,
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
-        subtitle: Text(account.issuer),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(account.issuer),
+            if (_settings.showOnHome) ...[
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Text(
+                    code,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'monospace',
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      value: remaining / account.interval,
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        remaining <= 5
+                            ? Colors.red
+                            : Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
         onTap: () {
           Navigator.push(
