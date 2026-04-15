@@ -18,7 +18,7 @@ class BackupService {
         type: StorageDirectory.downloads,
       );
       if (externalDirs != null && externalDirs.isNotEmpty) {
-        backupDir = Directory('${externalDirs.first.path}/neap');
+        backupDir = Directory('${externalDirs.first.path}/neapbackup');
       }
     }
 
@@ -27,7 +27,7 @@ class BackupService {
       if (downloadDir == null) {
         throw Exception('Cannot access Downloads directory');
       }
-      backupDir = Directory('${downloadDir.path}/neap');
+      backupDir = Directory('${downloadDir.path}/neapbackup');
     }
 
     if (!await backupDir.exists()) {
