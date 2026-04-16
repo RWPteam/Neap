@@ -12,7 +12,7 @@ class AppLocalizations {
 
   static const _localizedValues = <String, Map<String, String>>{
     'en': {
-      'app_title': 'Neap',
+      'app_title': 'Neap Authenticator',
       'add_account': 'Add Account',
       'scan_qr_code': 'Scan QR Code',
       'manual_input_uri': 'Manual Input URI',
@@ -122,7 +122,7 @@ class AppLocalizations {
       'password': 'Password',
     },
     'zh': {
-      'app_title': 'Neap',
+      'app_title': 'Neap Authenticator',
       'add_account': '添加账户',
       'scan_qr_code': '扫描二维码',
       'manual_input_uri': '手动输入 URI',
@@ -221,7 +221,7 @@ class AppLocalizations {
       'password': '密码',
     },
     'ja': {
-      'app_title': 'Neap',
+      'app_title': 'Neap Authenticator',
       'add_account': 'アカウントを追加',
       'scan_qr_code': 'QRコードをスキャン',
       'manual_input_uri': 'URIを手動入力',
@@ -324,7 +324,8 @@ class AppLocalizations {
   };
 
   String get appTitle =>
-      _localizedValues[locale.languageCode]?['app_title'] ?? 'Neap';
+      _localizedValues[locale.languageCode]?['app_title'] ??
+      'Neap Authenticator';
   String get addAccount =>
       _localizedValues[locale.languageCode]?['add_account'] ?? 'Add Account';
   String get scanQrCode =>

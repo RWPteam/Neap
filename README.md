@@ -7,6 +7,7 @@ flutter build apk --split-debug-info --obfuscate  --split-per-abi #(--build-numb
 ```
 # Todo
 * sort
+* backup
 * more feature...
 
 # Warning

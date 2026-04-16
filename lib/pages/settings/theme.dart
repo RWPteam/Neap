@@ -40,13 +40,13 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   ];
 
   final Map<String, Color> _themeColors = {
-    'default': const Color(0xFF6750A4),
-    'orange': const Color(0xFFFF6F00),
-    'green': const Color(0xFF4CAF50),
-    'yellow': const Color(0xFFFFC107),
-    'red': const Color(0xFFF44336),
-    'pink': const Color(0xFFE91E63),
-    'purple': const Color(0xFF9C27B0),
+    'default': Colors.blueAccent,
+    'orange': Colors.orange,
+    'green': Colors.green,
+    'yellow': Colors.yellow,
+    'red': Colors.red,
+    'pink': Colors.pink,
+    'purple': Colors.purple,
     'cyan': Colors.cyan,
     'indigo': Colors.indigo,
     'monochrome': Colors.black,

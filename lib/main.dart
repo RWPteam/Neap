@@ -154,7 +154,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     final String pageTheme = _currentSettings.pageTheme;
 
     final Map<String, Color> themeColors = {
-      'default': Colors.blue,
+      'default': Colors.blueAccent,
       'orange': Colors.orange,
       'green': Colors.green,
       'yellow': Colors.yellow,
