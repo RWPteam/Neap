@@ -1,16 +1,20 @@
 import 'dart:convert';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/account_model.dart';
 
 class StorageService {
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
   static const String _accountsKey = 'totp_accounts';
 
   Future<List<TotpAccount>> getAccounts() async {
-    final String? data = await _storage.read(key: _accountsKey);
-    if (data == null) return [];
-    final List<dynamic> jsonList = jsonDecode(data);
-    return jsonList.map((e) => TotpAccount.fromJson(e)).toList();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? data = prefs.getString(_accountsKey);
+      if (data == null) return [];
+      final List<dynamic> jsonList = jsonDecode(data);
+      return jsonList.map((e) => TotpAccount.fromJson(e)).toList();
+    } catch (e) {
+      return [];
+    }
   }
 
   Future<void> saveAccount(TotpAccount account) async {
@@ -39,7 +43,8 @@ class StorageService {
   }
 
   Future<void> _saveAccounts(List<TotpAccount> accounts) async {
+    final prefs = await SharedPreferences.getInstance();
     final jsonList = accounts.map((a) => a.toJson()).toList();
-    await _storage.write(key: _accountsKey, value: jsonEncode(jsonList));
+    await prefs.setString(_accountsKey, jsonEncode(jsonList));
   }
 }

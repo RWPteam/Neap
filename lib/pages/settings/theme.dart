@@ -22,7 +22,6 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   bool _isLoading = true;
   String _themeMode = 'system';
   String _pageTheme = 'default';
-  bool _useMaterialYou = false;
 
   int _easterEggCount = 0;
 
@@ -64,7 +63,6 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     setState(() {
       _themeMode = settings.themeMode;
       _pageTheme = settings.pageTheme;
-      _useMaterialYou = settings.useMaterialYou;
       _isLoading = false;
     });
   }
@@ -75,7 +73,6 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       final newSettings = currentSettings.copyWith(
         themeMode: _themeMode,
         pageTheme: _pageTheme,
-        useMaterialYou: _useMaterialYou,
       );
       await widget.settingsService.saveSettings(newSettings);
 
@@ -350,94 +347,62 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                width: double.infinity,
-                                margin: const EdgeInsets.only(bottom: 16),
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: SwitchListTile(
-                                  title: Text(
-                                    t.useMaterialYou,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  value: _useMaterialYou,
-                                  onChanged: (value) async {
-                                    setState(() {
-                                      _useMaterialYou = value;
-                                    });
-                                    await _saveSettings();
-                                  },
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 16,
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 16.0),
+                                child: Text(
+                                  t.pageTheme,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
-                              if (!_useMaterialYou) ...[
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 16.0),
-                                  child: Text(
-                                    t.pageTheme,
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: GridView.builder(
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 3,
-                                          childAspectRatio: 1.2,
-                                          crossAxisSpacing: 16,
-                                          mainAxisSpacing: 16,
-                                        ),
-                                    itemCount: _pageThemes.length,
-                                    itemBuilder: (context, index) {
-                                      final theme = _pageThemes[index];
-                                      final isSelected = _pageTheme == theme;
+                              Expanded(
+                                child: GridView.builder(
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        childAspectRatio: 1.2,
+                                        crossAxisSpacing: 16,
+                                        mainAxisSpacing: 16,
+                                      ),
+                                  itemCount: _pageThemes.length,
+                                  itemBuilder: (context, index) {
+                                    final theme = _pageThemes[index];
+                                    final isSelected = _pageTheme == theme;
 
-                                      return GestureDetector(
-                                        onTap: () => _onColorThemeTap(theme),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              12.0,
-                                            ),
-                                            border: Border.all(
-                                              color: isSelected
-                                                  ? Theme.of(
-                                                      context,
-                                                    ).primaryColor
-                                                  : Colors.grey,
-                                              width: isSelected ? 2.0 : 1.0,
-                                            ),
+                                    return GestureDetector(
+                                      onTap: () => _onColorThemeTap(theme),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            12.0,
+                                          ),
+                                          border: Border.all(
                                             color: isSelected
-                                                ? Theme.of(
-                                                    context,
-                                                  ).colorScheme.onInverseSurface
-                                                : Colors.transparent,
+                                                ? Theme.of(context).primaryColor
+                                                : Colors.grey,
+                                            width: isSelected ? 2.0 : 1.0,
                                           ),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              _buildColorPalette(theme),
-                                              const SizedBox(height: 8),
-                                            ],
-                                          ),
+                                          color: isSelected
+                                              ? Theme.of(
+                                                  context,
+                                                ).colorScheme.onInverseSurface
+                                              : Colors.transparent,
                                         ),
-                                      );
-                                    },
-                                  ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            _buildColorPalette(theme),
+                                            const SizedBox(height: 8),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
-                              ],
+                              ),
                             ],
                           ),
                         ),
@@ -485,90 +450,56 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             ),
                           ),
                         ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 6.0,
-                            horizontal: 16.0,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 16,
                           ),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey, width: 1.0),
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          child: SwitchListTile(
-                            title: Text(
-                              t.useMaterialYou,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            value: _useMaterialYou,
-                            onChanged: (value) async {
-                              setState(() {
-                                _useMaterialYou = value;
-                              });
-                              await _saveSettings();
-                            },
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                              vertical: 16.0,
+                          child: Text(
+                            t.pageTheme,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                        if (!_useMaterialYou) ...[
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 16,
-                            ),
-                            child: Text(
-                              t.pageTheme,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                childAspectRatio: 1,
+                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 8,
                               ),
-                            ),
-                          ),
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  childAspectRatio: 1,
-                                  crossAxisSpacing: 8,
-                                  mainAxisSpacing: 8,
-                                ),
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            itemCount: _pageThemes.length,
-                            itemBuilder: (context, index) {
-                              final theme = _pageThemes[index];
-                              final isSelected = _pageTheme == theme;
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: _pageThemes.length,
+                          itemBuilder: (context, index) {
+                            final theme = _pageThemes[index];
+                            final isSelected = _pageTheme == theme;
 
-                              return GestureDetector(
-                                onTap: () => _onColorThemeTap(theme),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    border: Border.all(
-                                      color: Colors.grey,
-                                      width: 1.0,
-                                    ),
-                                    color: isSelected
-                                        ? Theme.of(
-                                            context,
-                                          ).colorScheme.onInverseSurface
-                                        : Colors.transparent,
+                            return GestureDetector(
+                              onTap: () => _onColorThemeTap(theme),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                    width: 1.0,
                                   ),
-                                  child: Center(
-                                    child: _buildColorPalette(theme),
-                                  ),
+                                  color: isSelected
+                                      ? Theme.of(
+                                          context,
+                                        ).colorScheme.onInverseSurface
+                                      : Colors.transparent,
                                 ),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                        ],
+                                child: Center(child: _buildColorPalette(theme)),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 20),
                       ],
                     ),
                   );

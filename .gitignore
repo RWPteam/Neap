@@ -13,6 +13,12 @@
 *.pem
 *.jks
 migrate_working_dir/
+*.coverage
+*.cer
+*.p7b
+*.csr
+*.p12
+
 
 # self
 todo

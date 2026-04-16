@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:neap/services/time_service.dart';
 import 'package:screen_protector/screen_protector.dart';
@@ -151,11 +150,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     );
   }
 
-  ThemeData _buildTheme({
-    required Brightness brightness,
-    ColorScheme? dynamicScheme,
-  }) {
-    final bool useMaterialYou = _currentSettings.useMaterialYou;
+  ThemeData _buildTheme({required Brightness brightness}) {
     final String pageTheme = _currentSettings.pageTheme;
 
     final Map<String, Color> themeColors = {
@@ -175,9 +170,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     ColorScheme colorScheme;
 
-    if (useMaterialYou && dynamicScheme != null) {
-      colorScheme = dynamicScheme;
-    } else if (pageTheme == 'monochrome') {
+    if (pageTheme == 'monochrome') {
       if (brightness == Brightness.dark) {
         colorScheme = const ColorScheme.dark(
           primary: Colors.white,
@@ -270,12 +263,12 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       if (didAuthenticate) {
         setState(() => _isAuthenticated = true);
       } else {
-        if (navigatorKey.currentState != null) {
-          navigatorKey.currentState!.pushNamedAndRemoveUntil(
-            '/',
-            (route) => false,
-          );
-        }
+        final newSettings = _currentSettings.copyWith(requireBiometrics: false);
+        await _settingsService.saveSettings(newSettings);
+        setState(() {
+          _currentSettings = newSettings;
+          _isAuthenticated = true;
+        });
       }
     } catch (e) {
       debugPrint('认证错误: $e');
@@ -359,36 +352,27 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       );
     }
 
-    return DynamicColorBuilder(
-      builder: (lightDynamic, darkDynamic) {
-        return MaterialApp(
-          title: 'Neap',
-          localizationsDelegates: localizationsDelegates,
-          supportedLocales: supportedLocales,
-          locale: _getLocale(),
-          navigatorKey: navigatorKey,
-          themeMode: _getThemeMode(),
-          theme: _buildTheme(
-            brightness: Brightness.light,
-            dynamicScheme: lightDynamic,
-          ),
-          darkTheme: _buildTheme(
-            brightness: Brightness.dark,
-            dynamicScheme: darkDynamic,
-          ),
-          navigatorObservers: [routeObserver],
-          builder: (context, child) {
-            return Stack(
-              children: [
-                child!,
-                if (!_isAuthenticated) _buildLockScreen(context),
-              ],
-            );
-          },
-          home: const HomePage(),
-          debugShowCheckedModeBanner: false,
+    return MaterialApp(
+      title: 'Neap',
+      localizationsDelegates: localizationsDelegates,
+      supportedLocales: supportedLocales,
+      locale: _getLocale(),
+      navigatorKey: navigatorKey,
+      themeMode: _getThemeMode(),
+      theme: _buildTheme(brightness: Brightness.light),
+      darkTheme: _buildTheme(brightness: Brightness.dark),
+      navigatorObservers: [routeObserver],
+      builder: (context, child) {
+        return Stack(
+          children: [
+            child!,
+            if (_currentSettings.requireBiometrics && !_isAuthenticated)
+              _buildLockScreen(context),
+          ],
         );
       },
+      home: const HomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

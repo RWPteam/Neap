@@ -100,7 +100,7 @@ class AppLocalizations {
       'final_confirm_delete_message':
           'This is your last chance. Tap "Delete" again to confirm',
       'global_settings_subtitle': 'Language, Biometric and Privacy',
-      'theme_settings_subtitle': 'Theme and color, Material You',
+      'theme_settings_subtitle': 'Theme and color',
       'about_subtitle': 'Version and license',
       'save_settings_error': 'Failed to save settings',
       'app_locked': 'App Locked',
@@ -119,21 +119,6 @@ class AppLocalizations {
       'show_on_home': 'Show Codes on Home',
       'show_on_home_description':
           'Display verification codes directly in the home account list',
-      'backup_accounts': 'Backup Accounts',
-      'backup_accounts_description':
-          'Encrypt all account data and save the backup file',
-      'restore_accounts': 'Restore Accounts',
-      'restore_accounts_description':
-          'Choose a backup file and restore your accounts',
-      'backup_password_prompt': 'Enter a password to encrypt',
-      'paste_backup_data': 'Paste encrypted backup',
-      'copy_backup': 'Copy Backup',
-      'copy_backup_data': 'Copy the encrypted backup data below',
-      'backup_copied': 'Encrypted backup copied to clipboard',
-      'backup_error': 'Backup failed',
-      'restore_success': 'Restore completed successfully',
-      'password_incorrect': 'Password incorrect or backup data invalid',
-      'invalid_backup_data': 'Invalid backup data or missing password',
       'password': 'Password',
     },
     'zh': {
@@ -217,7 +202,7 @@ class AppLocalizations {
       'initial_confirm_delete_message': '若信息无误，再次点击“删除”按钮。',
       'final_confirm_delete_message': '这是最后一次机会，请再次点击“删除”',
       'global_settings_subtitle': '语言、生物识别和隐私设置',
-      'theme_settings_subtitle': '主题和颜色，Material You',
+      'theme_settings_subtitle': '主题和颜色',
       'about_subtitle': '版本和许可',
       'save_settings_error': '保存设置失败',
       'app_locked': '应用已锁定',
@@ -233,23 +218,6 @@ class AppLocalizations {
       'use_network_time': '使用网络时间',
       'show_on_home': '主页显示验证码',
       'show_on_home_description': '在主页账户列表中直接显示验证码',
-      'backup_accounts': '备份账户',
-      'backup_accounts_description': '备份所有账户',
-      'restore_accounts': '恢复账户',
-      'restore_accounts_description': '选择一个备份文件并恢复',
-      'backup_password_prompt': '输入密码以加密',
-      'paste_backup_data': '粘贴加密备份',
-      'copy_backup': '复制备份',
-      'copy_backup_data': '复制下面的加密备份数据',
-      'backup_copied': '加密备份已复制到剪贴板',
-      'backup_error': '备份失败',
-      'backup_saved': '备份已保存到 {path}',
-      'restore_success': '恢复完成',
-      'restore_password_prompt': '输入解密密码',
-      'no_backup_files': '未找到备份文件',
-      'select_backup_file': '选择备份文件',
-      'password_incorrect': '密码错误或备份数据无效',
-      'invalid_backup_data': '备份数据无效或密码不能为空',
       'password': '密码',
     },
     'ja': {
@@ -334,7 +302,7 @@ class AppLocalizations {
       'final_confirm_delete_message':
           'これが最後の確認です。「削除」をタップすると "{label}" が完全に削除されます。',
       'global_settings_subtitle': '言語，生体認証，プライバシー',
-      'theme_settings_subtitle': 'テーマと色，Material You',
+      'theme_settings_subtitle': 'テーマと色',
       'about_subtitle': 'バージョンとライセンス',
       'save_settings_error': '設定の保存に失敗しました',
       'japanese': '日本語',
@@ -351,23 +319,6 @@ class AppLocalizations {
       'use_network_time': 'ネットワーク時間を使用',
       'show_on_home': 'ホームにコードを表示',
       'show_on_home_description': 'ホームのアカウントリストに直接確認コードを表示します',
-      'backup_accounts': 'アカウントをバックアップ',
-      'backup_accounts_description': 'すべてのアカウントデータを暗号化し',
-      'restore_accounts': 'アカウントを復元',
-      'restore_accounts_description': 'パスワードで復号します',
-      'backup_password_prompt': '暗号化パスワードを入力してください',
-      'paste_backup_data': '暗号化バックアップを貼り付け',
-      'copy_backup': 'バックアップをコピー',
-      'copy_backup_data': '以下の暗号化バックアップデータをコピーしてください',
-      'backup_copied': '暗号化バックアップをクリップボードにコピーしました',
-      'backup_error': 'バックアップに失敗しました',
-      'backup_saved': 'バックアップを {path} に保存しました',
-      'restore_success': '復元が完了しました',
-      'restore_password_prompt': '復号用パスワードを入力してください',
-      'no_backup_files': 'バックアップファイルが見つかりません',
-      'select_backup_file': 'バックアップファイルを選択',
-      'password_incorrect': 'パスワードが間違っているかバックアップが無効です',
-      'invalid_backup_data': 'バックアップデータが無効であるかパスワードがありません',
       'password': 'パスワード',
     },
   };
@@ -638,81 +589,8 @@ class AppLocalizations {
       _localizedValues[locale.languageCode]?['show_on_home_description'] ??
       'Display verification codes directly in the home account list';
 
-  String get backupAccounts =>
-      _localizedValues[locale.languageCode]?['backup_accounts'] ??
-      'Backup Accounts';
-
-  String get backupAccountsDescription =>
-      _localizedValues[locale.languageCode]?['backup_accounts_description'] ??
-      'Encrypt all account data and copy the backup text';
-
-  String get restoreAccounts =>
-      _localizedValues[locale.languageCode]?['restore_accounts'] ??
-      'Restore Accounts';
-
-  String get restoreAccountsDescription =>
-      _localizedValues[locale.languageCode]?['restore_accounts_description'] ??
-      'Paste encrypted backup text and decrypt with your password';
-
-  String get backupPasswordPrompt =>
-      _localizedValues[locale.languageCode]?['backup_password_prompt'] ??
-      'Enter a password to encrypt';
-
-  String get restorePasswordPrompt =>
-      _localizedValues[locale.languageCode]?['restore_password_prompt'] ??
-      'Enter password to decrypt';
-
-  String get noBackupFiles =>
-      _localizedValues[locale.languageCode]?['no_backup_files'] ??
-      'No backup files found';
-
-  String get selectBackupFile =>
-      _localizedValues[locale.languageCode]?['select_backup_file'] ??
-      'Select a backup file';
-
-  String get pasteBackupData =>
-      _localizedValues[locale.languageCode]?['paste_backup_data'] ??
-      'Paste encrypted backup';
-
-  String get copyBackup =>
-      _localizedValues[locale.languageCode]?['copy_backup'] ?? 'Copy Backup';
-
-  String get copyBackupData =>
-      _localizedValues[locale.languageCode]?['copy_backup_data'] ??
-      'Copy the encrypted backup data below';
-
-  String get backupCopied =>
-      _localizedValues[locale.languageCode]?['backup_copied'] ??
-      'Encrypted backup copied to clipboard';
-
-  String get backupSaved =>
-      _localizedValues[locale.languageCode]?['backup_saved'] ??
-      'Backup saved to {path}';
-
-  String get backupError =>
-      _localizedValues[locale.languageCode]?['backup_error'] ?? 'Backup failed';
-
-  String get restoreSuccess =>
-      _localizedValues[locale.languageCode]?['restore_success'] ??
-      'Restore completed successfully';
-
-  String get passwordIncorrect =>
-      _localizedValues[locale.languageCode]?['password_incorrect'] ??
-      'Password incorrect or backup data invalid';
-
-  String get invalidBackupData =>
-      _localizedValues[locale.languageCode]?['invalid_backup_data'] ??
-      'Invalid backup data or missing password';
-
   String get password =>
       _localizedValues[locale.languageCode]?['password'] ?? 'Password';
-
-  String backupSavedMessage(String path) {
-    final template =
-        _localizedValues[locale.languageCode]?['backup_saved'] ??
-        'Backup saved to {path}';
-    return template.replaceAll('{path}', path);
-  }
 
   String initialConfirmDeleteMessage(String label) {
     final template =

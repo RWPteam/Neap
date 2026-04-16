@@ -200,7 +200,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  Container(
+                  SizedBox(
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(

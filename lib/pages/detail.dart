@@ -2,11 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
+
 import 'package:neap/main.dart';
 import 'package:neap/services/time_service.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:device_info_plus/device_info_plus.dart';
+
 import '../l10n/app_localizations.dart';
 import '../models/account_model.dart';
 
@@ -341,145 +340,42 @@ class _AccountDetailPageState extends State<AccountDetailPage>
 
   Future<void> _pickImageFromGallery() async {
     final t = AppLocalizations.of(context);
-    final theme = Theme.of(context);
+    Theme.of(context);
     try {
-      Permission permissionToRequest;
-      if (Theme.of(context).platform == TargetPlatform.android) {
-        final deviceInfo = DeviceInfoPlugin();
-        final androidInfo = await deviceInfo.androidInfo;
-        if (androidInfo.version.sdkInt >= 33) {
-          permissionToRequest = Permission.photos;
-        } else {
-          permissionToRequest = Permission.storage;
-        }
-      } else {
-        permissionToRequest = Permission.photos;
-      }
-      var status = await permissionToRequest.status;
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
-      if (status.isDenied || status.isLimited) {
-        if (mounted) {
-          final shouldRequest = await showDialog<bool>(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: Text(t.permissionRequired),
-              content: Text(t.permissionGalleryDescription),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context, false),
-                  child: Text(t.cancel),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.pop(context, true),
-                  child: Text(t.allow),
-                ),
-              ],
-            ),
+      if (image != null) {
+        MyAppState.shouldSkipAuthentication = true;
+        setState(() {
+          _account = TotpAccount(
+            id: _account.id,
+            label: _account.label,
+            issuer: _account.issuer,
+            secret: _account.secret,
+            interval: _account.interval,
+            digits: _account.digits,
+            avatarType: 'custom_image',
+            avatarImagePath: image.path,
           );
+        });
 
-          if (shouldRequest != true) {
-            if (mounted) Navigator.pop(context);
-            return;
-          }
-        }
-        status = await permissionToRequest.request();
-        if (status.isDenied || status.isPermanentlyDenied) {
-          if (status.isPermanentlyDenied) {
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(t.permissionGalleryDeniedPermanently),
-                  action: SnackBarAction(
-                    label: t.settings,
-                    onPressed: () => openAppSettings(),
-                  ),
-                ),
-              );
-            }
-          } else {
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(t.permissionGalleryDenied)),
-              );
-            }
-          }
-          if (mounted) Navigator.pop(context);
-          return;
-        }
-      }
-
-      if (status.isGranted || status.isLimited) {
-        final ImagePicker picker = ImagePicker();
-        final XFile? image = await picker.pickImage(
-          source: ImageSource.gallery,
-        );
-
-        if (image != null) {
-          MyAppState.shouldSkipAuthentication = true;
-          final CroppedFile? croppedFile = await ImageCropper().cropImage(
-            sourcePath: image.path,
-            aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-            uiSettings: [
-              AndroidUiSettings(
-                toolbarTitle: t.cropImage,
-                toolbarColor: theme.colorScheme.primary,
-                statusBarColor: theme.colorScheme.primary,
-                toolbarWidgetColor: theme.colorScheme.onPrimary,
-                activeControlsWidgetColor: theme.colorScheme.primary,
-
-                initAspectRatio: CropAspectRatioPreset.square,
-                lockAspectRatio: true,
-                hideBottomControls: false,
-                showCropGrid: true,
-              ),
-              IOSUiSettings(
-                title: t.cropImage,
-                doneButtonTitle: t.save,
-                cancelButtonTitle: t.cancel,
-                aspectRatioLockEnabled: true,
-                resetAspectRatioEnabled: false,
-                minimumAspectRatio: 1.0,
-              ),
-            ],
+        if (widget.onUpdate != null) {
+          widget.onUpdate!(
+            _account.label,
+            _account.issuer,
+            'custom_image',
+            image.path,
           );
-
-          if (croppedFile != null) {
-            setState(() {
-              _account = TotpAccount(
-                id: _account.id,
-                label: _account.label,
-                issuer: _account.issuer,
-                secret: _account.secret,
-                interval: _account.interval,
-                digits: _account.digits,
-                avatarType: 'custom_image',
-                avatarImagePath: croppedFile.path,
-              );
-            });
-
-            if (widget.onUpdate != null) {
-              widget.onUpdate!(
-                _account.label,
-                _account.issuer,
-                'custom_image',
-                croppedFile.path,
-              );
-            }
-          }
         }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(t.permissionGalleryDenied)));
-        }
-        if (mounted) Navigator.pop(context);
       }
+      if (mounted) Navigator.pop(context);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('${t.pickImageFailed}: $e')));
+        debugPrint('Error picking image: $e');
       }
       if (mounted) Navigator.pop(context);
     }

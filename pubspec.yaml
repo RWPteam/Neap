@@ -34,24 +34,44 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  dynamic_color: ^1.8.1
   flutter_localizations:
     sdk: flutter
-  flutter_secure_storage: ^10.0.0
+  flutter_secure_storage: ^4.2.1
   auth_totp: ^1.0.1
   crypto: ^3.0.7
-  mobile_scanner: ^7.2.0
-  image_picker: ^1.1.2
-  image_cropper: ^8.0.2
-  permission_handler: ^11.3.1
-  device_info_plus: ^10.1.0
-  local_auth: ^2.1.3
+  mobile_scanner: 
+    git:
+      url: https://gitcode.com/openharmony-sig/fluttertpc_mobile_scanner.git
+      ref: br_v6.0.10_ohos_dev
+  image_cropper:
+    git:
+      url: https://gitcode.com/openharmony-sig/fluttertpc_image_cropper.git
+      ref: br_v9.1.0_ohos
+      path: image_cropper
+  local_auth: 
+    path: ./local_auth
+  local_auth_ohos: 
+    path: ./local_auth_ohos
   screen_protector: ^1.5.1
-  flutter_launcher_icons: ^0.14.0
   ntp: ^2.0.0
-  encrypt: ^5.0.3
-  file_picker: ^11.0.2
-  path_provider: ^2.1.5
+  shared_preferences:
+    git:
+      url: "https://gitcode.com/openharmony-tpc/flutter_packages.git"
+      path: "packages/shared_preferences/shared_preferences"
+  path_provider:
+    git: 
+      url: https://gitcode.com/openharmony-tpc/flutter_packages.git
+      path: packages/path_provider/path_provider
+  image_picker:
+    git: 
+      url: https://gitcode.com/openharmony-tpc/flutter_packages.git
+      path: packages/image_picker/image_picker
+  image_picker_ohos:
+    git: 
+      url: https://gitcode.com/openharmony-tpc/flutter_packages.git
+      path: packages/image_picker/image_picker_ohos
+
+
 
 dev_dependencies:
   flutter_test:
@@ -106,10 +126,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
-flutter_launcher_icons:
-  android: true
-  ios: true
-  image_path: "assets/icon/icon.png"   
-  adaptive_icon_background: "#FFFFFF"    
-  adaptive_icon_foreground: "assets/icon/foreground.png"
-  adaptive_icon_monochrome: "assets/icon/monochrome.png"
