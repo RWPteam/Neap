@@ -210,45 +210,46 @@ class _GlobalSettingsPageState extends State<GlobalSettingsPage> {
             ),
           ),
           const SizedBox(height: 16),
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: SwitchListTile(
-              title: Text(AppLocalizations.of(context).useNetworkTime),
-              subtitle: Text(
-                AppLocalizations.of(context).networkTimeDescription,
-              ),
-              value: _useNetworkTime,
-              onChanged: (value) {
-                setState(() => _useNetworkTime = value);
-                _saveSettings();
-              },
-              contentPadding: const EdgeInsets.all(16),
-            ),
-          ),
-          const SizedBox(height: 16),
-          if (_useNetworkTime)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ListTile(
-                  title: Text(AppLocalizations.of(context).customNtpServer),
-                  subtitle: Text(_ntpServer),
-                  trailing: const Icon(Icons.edit),
-                  onTap: _showNtpServerDialog,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                ),
-              ),
-            ),
+          // NTP 相关设置暂时隐藏
+          // Container(
+          //   decoration: BoxDecoration(
+          //     border: Border.all(color: Colors.grey.shade300),
+          //     borderRadius: BorderRadius.circular(12),
+          //   ),
+          //   child: SwitchListTile(
+          //     title: Text(AppLocalizations.of(context).useNetworkTime),
+          //     subtitle: Text(
+          //       AppLocalizations.of(context).networkTimeDescription,
+          //     ),
+          //     value: _useNetworkTime,
+          //     onChanged: (value) {
+          //       setState(() => _useNetworkTime = value);
+          //       _saveSettings();
+          //     },
+          //     contentPadding: const EdgeInsets.all(16),
+          //   ),
+          // ),
+          // const SizedBox(height: 16),
+          // if (_useNetworkTime)
+          //   Padding(
+          //     padding: const EdgeInsets.only(top: 8),
+          //     child: Container(
+          //       decoration: BoxDecoration(
+          //         border: Border.all(color: Colors.grey.shade300),
+          //         borderRadius: BorderRadius.circular(12),
+          //       ),
+          //       child: ListTile(
+          //         title: Text(AppLocalizations.of(context).customNtpServer),
+          //         subtitle: Text(_ntpServer),
+          //         trailing: const Icon(Icons.edit),
+          //         onTap: _showNtpServerDialog,
+          //         contentPadding: const EdgeInsets.symmetric(
+          //           horizontal: 16,
+          //           vertical: 12,
+          //         ),
+          //       ),
+          //     ),
+          // ),
         ],
       ),
     );
