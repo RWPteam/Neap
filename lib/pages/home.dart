@@ -9,6 +9,88 @@ import 'add.dart';
 import 'detail.dart';
 import 'settings/splash.dart';
 
+class AnimatedCountdownCircle extends StatefulWidget {
+  final double value;
+  final Color color;
+  final double size;
+  final double strokeWidth;
+
+  const AnimatedCountdownCircle({
+    super.key,
+    required this.value,
+    required this.color,
+    this.size = 32,
+    this.strokeWidth = 2.5,
+  });
+
+  @override
+  State<AnimatedCountdownCircle> createState() =>
+      _AnimatedCountdownCircleState();
+}
+
+class _AnimatedCountdownCircleState extends State<AnimatedCountdownCircle>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  double? _previousValue;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
+    _previousValue = widget.value;
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant AnimatedCountdownCircle oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // 检测倒计时重置（value 从接近 0 突然变为接近 1）
+    if (_previousValue != null) {
+      final isReset = _previousValue! < 0.1 && widget.value > 0.9;
+
+      if (isReset) {
+        // 重置时直接跳转到新值，不使用动画
+        _controller.value = widget.value;
+      } else {
+        // 平滑过渡到新值
+        _controller.animateTo(widget.value);
+      }
+    }
+
+    _previousValue = widget.value;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return SizedBox(
+          width: widget.size,
+          height: widget.size,
+          child: CircularProgressIndicator(
+            value: _controller.value,
+            strokeWidth: widget.strokeWidth,
+            valueColor: AlwaysStoppedAnimation<Color>(widget.color),
+            backgroundColor: Colors.grey[200],
+          ),
+        );
+      },
+    );
+  }
+}
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -188,37 +270,28 @@ class _HomePageState extends State<HomePage> {
             Text(account.issuer),
             if (_settings.showOnHome) ...[
               const SizedBox(height: 4),
-              Row(
-                children: [
-                  Text(
-                    code,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'monospace',
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      value: remaining / account.interval,
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        remaining <= 5
-                            ? Colors.red
-                            : Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                ],
+              Text(
+                code,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'monospace',
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
             ],
           ],
         ),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        trailing: _settings.showOnHome
+            ? AnimatedCountdownCircle(
+                value: remaining / account.interval,
+                color: remaining <= 5
+                    ? Colors.red
+                    : Theme.of(context).colorScheme.primary,
+                size: 32,
+                strokeWidth: 2.5,
+              )
+            : null,
         onTap: () {
           Navigator.push(
             context,
